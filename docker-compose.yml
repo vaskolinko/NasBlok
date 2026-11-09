@@ -1,0 +1,24 @@
+services:
+  db:
+    image: postgres:16
+    container_name: nasblok-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nasblok
+      POSTGRES_PASSWORD: nasblok
+      POSTGRES_DB: nasblok
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: nasblok-mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"   
+      - "8025:8025"   # spletni vmesnik: http://localhost:8025
+
+volumes:
+  pgdata:
