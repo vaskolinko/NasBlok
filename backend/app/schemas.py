@@ -1,9 +1,17 @@
 """Pydantic sheme za vhodne in izhodne podatke API-ja."""
 
-from pydantic import BaseModel, EmailStr, Field
+from typing import Annotated
+
+from pydantic import BaseModel, EmailStr, Field, StringConstraints
 
 from app.models import MemberRole
 
+# Besedilo, ki mu odrežem presledke na začetku in koncu in ne sme biti prazno.
+Name = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=255)]
+UnitLabel = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=100)]
+
+
+# --- Avtentikacija ---
 
 class LoginRequest(BaseModel):
     email: EmailStr
@@ -40,7 +48,30 @@ class MeResponse(BaseModel):
     memberships: list[MembershipOut]
 
 
+# --- Stavbe in stanovanja ---
+
 class BuildingOut(BaseModel):
     id: int
     name: str
     address: str
+
+
+class BuildingCreate(BaseModel):
+    name: Name
+    address: Name
+
+
+class BuildingUpdate(BaseModel):
+    # Pri urejanju pošlje frontend samo polja, ki se spreminjajo.
+    name: Name | None = None
+    address: Name | None = None
+
+
+class UnitIn(BaseModel):
+    label: UnitLabel
+
+
+class UnitOut(BaseModel):
+    id: int
+    label: str
+    member_count: int
