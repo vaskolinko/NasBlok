@@ -8,11 +8,12 @@ import Glasovanja from './pages/Glasovanja.jsx'
 import Obvestila from './pages/Obvestila.jsx'
 import Prijava from './pages/Prijava.jsx'
 import Registracija from './pages/Registracija.jsx'
+import Stavba from './pages/Stavba.jsx'
 
 export default function App() {
   return (
     <Routes>
-      {/* javno vsem roles */}
+      {/* javni strani */}
       <Route path="/prijava" element={<Prijava />} />
       <Route path="/registracija" element={<Registracija />} />
 
@@ -39,6 +40,14 @@ export default function App() {
           element={
             <ProtectedRoute roles={ANNOUNCEMENT_ROLES}>
               <Obvestila />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/stavba"
+          element={
+            <ProtectedRoute roles={['MANAGER']}>
+              <Stavba />
             </ProtectedRoute>
           }
         />

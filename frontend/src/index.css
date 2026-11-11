@@ -1,5 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
-body {
-  font-family: system-ui, sans-serif;
+/* Barve in pisava iz oblikovanih wireframov (slog "Mirno in pregledno").
+   Tailwind iz teh spremenljivk ustvari razrede, npr. bg-brand, text-muted, border-line. */
+@theme {
+  --font-sans: 'Manrope', system-ui, sans-serif;
+  --color-brand: #0F5C4D;
+  --color-brand-dark: #0A4036;
+  --color-brand-light: #E3EFEC;
+  --color-accent: #F6C76B;
+  --color-page: #F4F5F2;
+  --color-line: #E2E5E0;
+  --color-muted: #55615D;
 }

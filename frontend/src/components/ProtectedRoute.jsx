@@ -8,7 +8,7 @@ export default function ProtectedRoute({ children, roles }) {
   const location = useLocation()
 
   if (loading) {
-    return <div className="p-10 text-stone-500">Nalagam ...</div>
+    return <div className="p-10 text-muted">Nalagam ...</div>
   }
 
   if (!user) {
@@ -18,9 +18,9 @@ export default function ProtectedRoute({ children, roles }) {
 
   if (roles && !hasRole(...roles)) {
     return (
-      <div className="bg-white border border-stone-200 rounded-2xl p-8">
+      <div className="bg-white border border-line rounded-2xl p-8">
         <h1 className="text-2xl font-extrabold">Ni dostopa</h1>
-        <p className="mt-2 text-stone-600">Ta del aplikacije ni na voljo za vašo vlogo.</p>
+        <p className="mt-2 text-muted">Ta del aplikacije ni na voljo za vašo vlogo.</p>
       </div>
     )
   }

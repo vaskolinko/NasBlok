@@ -1,10 +1,14 @@
 import { useState } from 'react'
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth.js'
+import AuthShell from '../components/AuthShell.jsx'
+
+const inputClass = 'h-12 px-3.5 border border-stone-300 rounded-xl font-normal text-base bg-white'
 
 export default function Registracija() {
   const { user, register } = useAuth()
   const navigate = useNavigate()
+  // Koda je lahko že v povezavi vabila, npr. /registracija?koda=LASTNIK-TEST
   const [searchParams] = useSearchParams()
   const [form, setForm] = useState({
     code: searchParams.get('koda') ?? '',
@@ -53,57 +57,43 @@ export default function Registracija() {
     }
   }
 
-  const inputClass = 'h-11 px-3 border border-stone-300 rounded-lg font-normal text-base'
-
   return (
-    <div className="min-h-screen bg-stone-100 flex items-center justify-center p-6">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-white border border-stone-200 rounded-2xl p-8 flex flex-col gap-4"
-      >
-        <div>
-          <div className="text-2xl font-extrabold">NašBlok</div>
-          <div className="text-stone-500">Registracija z vabilom</div>
-        </div>
-
-        <label className="flex flex-col gap-1 text-sm font-semibold">
+    <AuthShell subtitle="Registracija z vabilom">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <label className="flex flex-col gap-1.5 text-sm font-bold">
           Koda vabila
-          <input required value={form.code} onChange={update('code')} className={inputClass} />
+          <input required value={form.code} onChange={update('code')} placeholder="XXXX-XXXX" className={inputClass} />
         </label>
-        <label className="flex flex-col gap-1 text-sm font-semibold">
+        <label className="flex flex-col gap-1.5 text-sm font-bold">
           Ime in priimek
           <input required value={form.full_name} onChange={update('full_name')} className={inputClass} />
         </label>
-        <label className="flex flex-col gap-1 text-sm font-semibold">
+        <label className="flex flex-col gap-1.5 text-sm font-bold">
           E-poštni naslov
           <input type="email" required value={form.email} onChange={update('email')} className={inputClass} />
         </label>
-        <label className="flex flex-col gap-1 text-sm font-semibold">
+        <label className="flex flex-col gap-1.5 text-sm font-bold">
           Geslo (vsaj 8 znakov)
           <input type="password" required value={form.password} onChange={update('password')} className={inputClass} />
         </label>
-        <label className="flex flex-col gap-1 text-sm font-semibold">
+        <label className="flex flex-col gap-1.5 text-sm font-bold">
           Ponovite geslo
           <input type="password" required value={form.password2} onChange={update('password2')} className={inputClass} />
         </label>
 
-        {error && <div className="text-sm text-red-700 bg-red-50 rounded-lg p-3">{error}</div>}
+        {error && <div className="text-sm text-red-700 bg-red-50 rounded-xl p-3">{error}</div>}
 
-        <button
-          type="submit"
-          disabled={sending}
-          className="h-11 rounded-lg bg-emerald-800 text-white font-bold disabled:opacity-60"
-        >
+        <button type="submit" disabled={sending} className="h-12 rounded-xl bg-brand text-white font-extrabold disabled:opacity-60">
           {sending ? 'Ustvarjam račun ...' : 'Ustvari račun'}
         </button>
-
-        <p className="text-sm text-stone-600">
-          Že imate račun?{' '}
-          <Link to="/prijava" className="font-semibold text-emerald-800 hover:underline">
-            Prijava
-          </Link>
-        </p>
       </form>
-    </div>
+
+      <p className="mt-5 text-sm text-muted">
+        Že imate račun?{' '}
+        <Link to="/prijava" className="font-bold text-brand hover:underline">
+          Prijava
+        </Link>
+      </p>
+    </AuthShell>
   )
 }

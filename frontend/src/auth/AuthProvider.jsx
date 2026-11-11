@@ -2,12 +2,22 @@ import { useCallback, useEffect, useState } from 'react'
 import { api, getToken, setToken } from '../api.js'
 import { AuthContext } from './authContext.js'
 
+const BUILDING_KEY = 'nasblok_building'
+
+function readSavedBuilding() {
+  try {
+    return Number(localStorage.getItem(BUILDING_KEY)) || null
+  } catch {
+    return null
+  }
+}
+
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [selectedBuildingId, setSelectedBuildingId] = useState(readSavedBuilding)
 
   // Ob zagonu aplikacije in po prijavi preberem prijavljenega uporabnika z /auth/me.
-  // Če žeton ne velja več (npr. je potekel), ga zavržem in uporabnik se prijavi znova.
   const loadUser = useCallback(async () => {
     if (!getToken()) {
       setUser(null)
@@ -48,11 +58,23 @@ export default function AuthProvider({ children }) {
     setUser(null)
   }
 
-  // Odločitev: v MVP ima uporabnik eno stavbo, zato kot trenutno stavbo vzamem
-  // prvo. Upravnik z več stavbami bo kasneje dobil izbiro stavbe v glavi.
-  const building = user?.memberships?.length
-    ? { id: user.memberships[0].building_id, name: user.memberships[0].building_name }
-    : null
+  // upravnik ima lahko več stavb, zato si zapomnim izbrano stavbo
+  const buildings = []
+  for (const m of user?.memberships ?? []) {
+    if (!buildings.some((b) => b.id === m.building_id)) {
+      buildings.push({ id: m.building_id, name: m.building_name })
+    }
+  }
+  const building = buildings.find((b) => b.id === selectedBuildingId) ?? buildings[0] ?? null
+
+  function selectBuilding(id) {
+    setSelectedBuildingId(id)
+    try {
+      localStorage.setItem(BUILDING_KEY, String(id))
+    } catch {
+      
+    }
+  }
 
   const memberships = user ? user.memberships.filter((m) => m.building_id === building?.id) : []
   const roles = memberships.map((m) => m.role)
@@ -61,7 +83,20 @@ export default function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, register, logout, building, roles, unit, hasRole }}
+      value={{
+        user,
+        loading,
+        login,
+        register,
+        logout,
+        refreshUser: loadUser,
+        buildings,
+        building,
+        selectBuilding,
+        roles,
+        unit,
+        hasRole,
+      }}
     >
       {children}
     </AuthContext.Provider>
