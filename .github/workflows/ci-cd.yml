@@ -1,0 +1,23 @@
+
+name: NasBlok CI/CD
+
+on:
+  pull_request:
+    branches:
+      - main
+
+  push:
+    branches:
+      - main
+
+jobs:
+  workflow-check:
+    name: Workflow Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify workflow
+        run: echo "NasBlok CI/CD workflow is running!"
